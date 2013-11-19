@@ -90,7 +90,7 @@ class KiiRequest {
 
         curl_close($ch);
         
-//         echo "Request complete[".$http_status."] => ".$output."\n\n";
+        echo "Request complete[".$http_status."] => ".$output."\n\n";
                 
         // return status code, json-formatted response and raw output in an associative array
         return array("statusCode"=>$http_status, "json"=>json_decode($output), "raw"=>$output);

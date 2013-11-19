@@ -10,6 +10,8 @@ class KiiBucket {
 	
 	public function KiiBucket($owner, $name) {
 		$this->name = $name;	
+		echo "set name: ".$this->name."\n";	
+		
 		$this->acl = new KiiACL($this);
 	}
 	

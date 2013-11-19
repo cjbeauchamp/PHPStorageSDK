@@ -1,42 +1,74 @@
 <?php
+class root.KiiUser
 
-class KiiObject {
+    # these are 'private'
+    _thisUser = null
+
+    _uuid = null
+    _username = null
+    _displayName = null
+    _password = null
+    _emailAddress = null
+    _phoneNumber = null
+    _country = null
+    _created = null
+    _modified = null
+    _emailVerified = null
+    _phoneVerified = null
+    _accessToken = null
+
+    _customInfo = null
+
+
+
+
+    delete: (callbacks) =>
+
+        Kii.logger "Deleting user..."
+    
+        _thisUser = this
+        
+        request = @_getRequest {path: "/users/#{@_uuid}", withApp: true}
+        request.setMethod "DELETE"
+    
+        refreshCallbacks =
+            
+            success: (data, statusCode) =>
+
+                if statusCode < 300 and statusCode >= 200 and callbacks?
+                    callbacks.success _thisUser
+                else if callbacks?
+                    callbacks.failure _thisUser, "Unable to parse response"
+            
+            failure: (error, statusCode) =>
+                if callbacks?
+                    callbacks.failure _thisUser, error
+    
+        request.execute refreshCallbacks, true
+
+
+class KiiUser {
 	
 	var $uuid = null;
-	var $created = null;
-	var $modified = null;
-	var $objectType = null;
+	var $username = null;
+	var $emailAddress = null;
+	var $phoneNumber = null;
 	
 	// "hidden"
 	var $customInfo = array();
-	var $bucket = null;
-	var $owner = null;
 	
-    public function KiiObject($bucket, $type) {
-		$this->objectType = $type;
-		$this->bucket = $bucket;
+	public static function userWithUUID($uuid) {
+	
+	    $obj = new KiiUser();
+	    $obj->uuid = $uuid;
+
+		return $obj;
 	}
 	
-	public static function objectWithURI($uri) {
+	public static function userWithUsername($username) {
 	
-		$obj = null;
-	
-		$newURI = substr($uri, strlen("kiicloud://"));
-		
-		$components = explode("/", $newURI);
-		$compLength = count($components);
-				
-		if($compLength >= 4) {
-		
-			$bucketIndex = ($compLength == 4) ? 1 : 3;
-			$bucketName = $components[$bucketIndex];
-			
-			$bucket = new KiiBucket(null, $bucketName);
-			
-			$obj = new KiiObject($bucket, null);
-			$obj->uuid = $components[$compLength-1];
-		
-		}
+	    $obj = new KiiUser();
+	    $obj->uuid = $uuid;
 
 		return $obj;
 	}
