@@ -116,28 +116,30 @@ class KiiObject {
 
 	}
 	
-	public function describe() {
-	
-		KPrint("==== KiiObject ====");
-		
-		KPrint("UUID: ".$this->uuid);
-		KPrint("URI: ".$this->objectURI());
-		KPrint("Type: ".$this->objectType);
-		KPrint("Created: ".$this->created);
-		KPrint("Modified: ".$this->modified);
-		
-		foreach($this->customInfo as $key=>$value) {
-			if(is_string($value)) {
-				KPrint($key.": ".$value);		
-			} else {
-				KPrint($key.": ".json_encode($value));
-			}
-		}
-		
-		KPrint("===================");
-	}
-	
-	public function toArray() {
+    public function describe($lite) {
+        if($lite) {
+            KPrint("KiiObject ==> ".$this->uuid." => ".json_encode($this->customInfo));
+        } else {
+            KPrint("==== KiiObject ====");
+            KPrint("UUID: ".$this->uuid);
+            KPrint("URI: ".$this->objectURI());
+            KPrint("Type: ".$this->objectType);
+            KPrint("Created: ".$this->created);
+            KPrint("Modified: ".$this->modified);
+            
+            foreach($this->customInfo as $key=>$value) {
+                if(is_string($value)) {
+                    KPrint($key.": ".$value);    
+                } else {
+                    KPrint($key.": ".json_encode($value));
+                }
+            }
+            
+            KPrint("===================");
+        }	
+    }
+
+    public function toArray() {
 		
 		$arr = array();
 		
