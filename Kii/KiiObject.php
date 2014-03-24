@@ -25,13 +25,15 @@ class KiiObject {
 		
 		$components = explode("/", $newURI);
 		$compLength = count($components);
-				
+						
 		if($compLength >= 4) {
 		
 			$bucketIndex = ($compLength == 4) ? 1 : 3;
 			$bucketName = $components[$bucketIndex];
-			
-			$bucket = new KiiBucket(null, $bucketName);
+						
+			$owner = ($compLength == 4) ? null : KiiUser::userWithUUID($components[1]);
+						
+			$bucket = new KiiBucket($owner, $bucketName);
 			
 			$obj = new KiiObject($bucket, null);
 			$obj->uuid = $components[$compLength-1];
@@ -46,7 +48,7 @@ class KiiObject {
 		$objectRequest = new KiiRequest();
 		$objectRequest->method = "GET";
 
-		$objectRequest->path = "/buckets/".$this->bucket->name."/objects/".$this->uuid;
+		$objectRequest->path = $this->bucket->getPath()."/objects/".$this->uuid;
 		
 		// make the request
 		$objectResult = $objectRequest->execute();
@@ -80,15 +82,9 @@ class KiiObject {
 		
 		if($this->bucket && $this->uuid) {
 			
-			$uri = "kiicloud://";
+			$uri = "kiicloud:/";
 			
-			if($this->bucket->group) {
-			
-			} else if($this->bucket->user) {
-			
-			}
-			
-			$uri .= "buckets/".$this->bucket->name."/objects/".$this->uuid;			
+			$uri .= $this->bucket->getPath()."/objects/".$this->uuid;			
 		}
 		
 		return $uri;
@@ -116,7 +112,7 @@ class KiiObject {
 
 	}
 	
-    public function describe($lite) {
+    public function describe($lite=false) {
         if($lite) {
             KPrint("KiiObject ==> ".$this->uuid." => ".json_encode($this->customInfo));
         } else {
@@ -191,7 +187,7 @@ class KiiObject {
 
 		$objectRequest->method = ($this->uuid != null) ? "PUT" : "POST";
 
-		$path = "/buckets/".$this->bucket->name."/objects/";
+		$path = $this->bucket->getPath()."/objects/";
 		if($this->uuid != null) {
 			$path .= $this->uuid;
 		}
@@ -210,7 +206,7 @@ class KiiObject {
 	public function delete() {
 	
 		$deleteRequest = new KiiRequest();
-		$deleteRequest->path = "/buckets/".$this->bucket->name."/objects/".$this->uuid;
+		$deleteRequest->path = $this->bucket->getPath()."/objects/".$this->uuid;
 		$deleteRequest->method = "DELETE";
 		
 		// make the request

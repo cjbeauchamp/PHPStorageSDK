@@ -17,6 +17,8 @@ class KiiRequest {
     // some requests don't use the app id (specifically authentication). set to false if the path shouldn't include appID
     var $appScope = true;
 
+    var $accept = null;
+
     // the content type of the request
     var $contentType = "application/json";
     
@@ -80,7 +82,7 @@ class KiiRequest {
     		$headers[] = "Content-Length: ".strlen($postData);
     	}
     	
-//     	echo "Making request[".$this->method."] to [".$url."] with data: ".$postData."\n";
+    	echo "Making request[".$this->method."] to [".$url."] with data: ".$postData."\n";
     	
         curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
         $output = curl_exec($ch); 

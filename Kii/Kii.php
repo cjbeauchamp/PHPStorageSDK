@@ -5,6 +5,7 @@ require_once("KiiACL.php");
 require_once("KiiACLEntry.php");
 require_once("KiiBucket.php");
 require_once("KiiObject.php");
+require_once("KiiUser.php");
 require_once("KiiQuery.php");
 require_once("KiiClause.php");
 require_once("KiiUtilities.php");

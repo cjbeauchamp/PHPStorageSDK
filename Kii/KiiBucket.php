@@ -3,27 +3,37 @@
 class KiiBucket {
 
 	var $name = null;
-	var $user = null;
-	var $group = null;
+	var $owner = null;
 	
 	var $acl = null;
 	
 	public function KiiBucket($owner, $name) {
 		$this->name = $name;	
-		echo "set name: ".$this->name."\n";	
-		
+		$this->owner = $owner;
 		$this->acl = new KiiACL($this);
 	}
 	
-	public function createObject($type) {
+	public function createObject($type=null) {
 		return new KiiObject($this, $type);
 	}
 	
+	public function getPath() {
+	    $path = "";
+	    
+	    if($this->owner != null) {
+	        $path .= "/users/".$this->owner->uuid;
+	    }
+	    
+	    $path .= "/buckets/".$this->name;
+	    
+	    return $path;
+	}
+
 	public function delete() {
 	
 		// set up the request
 		$deleteRequest = new KiiRequest();
-		$deleteRequest->path = "/buckets/".$this->name;
+		$deleteRequest->path = $this->getPath();
 		$deleteRequest->method = "DELETE";
 
 		// make the request
@@ -36,7 +46,7 @@ class KiiBucket {
 	
 		// set up the request
 		$objectRequest = new KiiRequest();
-		$objectRequest->path = "/buckets/".$this->name."/query";
+		$objectRequest->path = $this->getPath()."/query";
 		$objectRequest->method = "POST";
 		$objectRequest->contentType = "application/vnd.kii.QueryRequest+json";
 		
