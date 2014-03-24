@@ -10,7 +10,6 @@ class KiiObject {
 	// "hidden"
 	var $customInfo = array();
 	var $bucket = null;
-	var $owner = null;
 	
     public function KiiObject($bucket, $type) {
 		$this->objectType = $type;
@@ -30,6 +29,8 @@ class KiiObject {
 		
 			$bucketIndex = ($compLength == 4) ? 1 : 3;
 			$bucketName = $components[$bucketIndex];
+			
+			print_r($components);
 						
 			$owner = ($compLength == 4) ? null : KiiUser::userWithUUID($components[1]);
 						
