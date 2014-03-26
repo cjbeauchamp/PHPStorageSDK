@@ -14,12 +14,13 @@ class Kii {
 
 	var $appID = null;
 	var $appKey = null;
-	var $baseURL = "https://api.kii.com/api";
+	var $baseURL = null;
 	var $accessToken = null;
 
-	function Kii($appId, $appKey) {
+	function Kii($appId, $appKey, $baseURL="https://api.kii.com/api") {
 		$this->appID = $appId;
 		$this->appKey = $appKey;
+		$this->baseURL = $baseURL;
 	}
 
 };
