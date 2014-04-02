@@ -82,7 +82,7 @@ class KiiRequest {
     		$headers[] = "Content-Length: ".strlen($postData);
     	}
     	
-//     	echo "Making request[".$this->method."] to [".$url."] with data: ".$postData."\n";
+    	// echo "Making request[".$this->method."] to [".$url."] with data: ".$postData."\n";
     	
         curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
         $output = curl_exec($ch); 
@@ -92,7 +92,7 @@ class KiiRequest {
 
         curl_close($ch);
         
-//         echo "Request complete[".$http_status."] => ".$output."\n\n";
+        // echo "Request complete[".$http_status."] => ".$output."\n\n";
                 
         // return status code, json-formatted response and raw output in an associative array
         return array("statusCode"=>$http_status, "json"=>json_decode($output), "raw"=>$output);
