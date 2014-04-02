@@ -54,7 +54,9 @@ class KiiObject {
 		// make the request
 		$objectResult = $objectRequest->execute();
 		
-		$this->updateJSON(get_object_vars($objectResult['json']));
+		if($objectResult['statusCode'] >= 200 && $objectResult['statusCode'] < 300) {
+		    $this->updateJSON(get_object_vars($objectResult['json']));
+		}
 		
 		return $objectResult['statusCode'];
 	}
