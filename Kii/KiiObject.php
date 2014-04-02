@@ -29,9 +29,7 @@ class KiiObject {
 		
 			$bucketIndex = ($compLength == 4) ? 1 : 3;
 			$bucketName = $components[$bucketIndex];
-			
-			print_r($components);
-						
+									
 			$owner = ($compLength == 4) ? null : KiiUser::userWithUUID($components[1]);
 						
 			$bucket = new KiiBucket($owner, $bucketName);
