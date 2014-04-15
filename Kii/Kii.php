@@ -23,6 +23,10 @@ class Kii {
 		$this->baseURL = $baseURL;
 	}
 
+	static function bucketWithName($name) {
+		return new KiiBucket(null, $name);
+	}
+
 };
 
 function KPrint($msg) {
