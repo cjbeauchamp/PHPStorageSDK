@@ -8,6 +8,7 @@ require_once("KiiObject.php");
 require_once("KiiUser.php");
 require_once("KiiQuery.php");
 require_once("KiiClause.php");
+require_once("KiiTopic.php");
 require_once("KiiUtilities.php");
 
 class Kii {

@@ -4,9 +4,13 @@ class KiiUser {
 	
 	var $uuid = null;
 	var $username = null;
+	var $displayName = null;
 	var $emailAddress = null;
+	var $emailVerified = false;
 	var $phoneNumber = null;
-	
+	var $phoneVerified = false;
+	var $password = null;
+
 	// "hidden"
 	var $customInfo = array();
 	
@@ -31,14 +35,79 @@ class KiiUser {
 		$objectRequest = new KiiRequest();
 		$objectRequest->method = "GET";
 
-		$objectRequest->path = "/buckets/".$this->bucket->name."/objects/".$this->uuid;
+		$objectRequest->path = "/users/me";
 		
 		// make the request
 		$objectResult = $objectRequest->execute();
 		
 		$this->updateJSON(get_object_vars($objectResult['json']));
-		
+
 		return $objectResult['statusCode'];
+	}
+
+	public function verifyPhone($code) {
+	
+		$request = new KiiRequest();
+		$request->method = "POST";
+		$request->contentType = "application/vnd.kii.AddressVerificationRequest+json";
+		$request->data = array("verificationCode"=>$code);
+
+		$request->path = "/users/me/phone-number/verify";
+		
+		// make the request
+		return $request->execute();
+	}
+
+	public function register() {
+
+		$request = new KiiRequest();
+		$request->method = "POST";
+		$request->path = "/users";
+		$request->contentType = "application/vnd.kii.RegistrationAndAuthorizationRequest+json";
+
+		$data = array(
+			"loginName" => $this->username,
+			"password" => $this->password
+		);
+
+		if($this->phoneNumber != null) $data["phoneNumber"] = $this->phoneNumber;
+		if($this->emailAddress != null) $data["emailAddress"] = $this->emailAddress;
+
+		$data = array_merge($data, $this->customInfo);
+
+		$request->data = $data;
+
+		$results = $request->execute();
+
+		if($results['statusCode'] >= 200 && $results['statusCode'] < 300) {
+			$this->updateJSON($results['json']);
+		}
+
+		return $results;
+	}
+
+	public function authenticate() {
+
+		$request = new KiiRequest();
+		$request->method = "POST";
+		$request->path = "/oauth2/token";
+		$request->appScope = false;
+		$request->contentType = "application/json";
+
+		$data = array(
+			"username" => $this->username,
+			"password" => $this->password
+		);
+
+		$request->data = $data;
+
+		$results = $request->execute();
+
+		if($results['statusCode'] >= 200 && $results['statusCode'] < 300) {
+			$this->updateJSON($results['json']);
+		}
+
+		return $results;
 	}
 	
 	public function set($key, $value) {
@@ -81,19 +150,25 @@ class KiiUser {
 	}
 	
 	public function updateJSON($json) {
-	
+
+		global $kii;
+
 		foreach($json as $key=>$value) {
 			
-			if($key == "objectID" || $key == "_id" || $key == "uuid") {
+			if($key == "userID" || $key == "_id" || $key == "uuid" || $key == "id") {
 				$this->uuid = $value;
-			} else if($key == "createdAt" || $key == "created" || $key == "_created") {
-				$this->created = $value;
-			} else if($key == "modifiedAt" || $key == "modified" || $key == "_modified") {
-				$this->created = $value;
-			} else if($key == "_owner") {
-				// TODO: make KiiUser.userWithID($value);
-			} else if($key == "_dataType") {
-				$this->objectType = $value;
+			} else if($key == "loginName") {
+				$this->username = $value;
+			} else if($key == "phoneNumber") {
+				$this->phoneNumber = $value;
+			} else if($key == "emailAddress") {
+				$this->emailAddress = $value;
+			} else if($key == "phoneNumberVerified") {
+				$this->phoneVerified = $value;
+			} else if($key == "emailAddressVerified") {
+				$this->emailVerified = $value;
+			} else if($key == "access_token") {
+				$kii->accessToken = $value;
 			} else {
 				$this->customInfo[$key] = $value;
 			}
