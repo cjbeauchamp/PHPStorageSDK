@@ -141,10 +141,7 @@ class KiiObject {
 		$arr = array();
 		
 		$arr['uuid'] = $this->uuid;
-// 		$arr['uri'] = $this->objectURI();
-// 		$arr['type'] = $this->objectType;
 		$arr['created'] = $this->created;
-// 		$arr['modified'] = $this->modified;
 		
 		foreach($this->customInfo as $key=>$value) {
 		

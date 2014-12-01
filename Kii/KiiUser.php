@@ -29,6 +29,10 @@ class KiiUser {
 
 		return $obj;
 	}
+
+	public function bucketWithName($name) {
+		return new KiiBucket($this, $name);
+	}
 	
 	public function refresh() {
 	
@@ -169,6 +173,8 @@ class KiiUser {
 				$this->emailVerified = $value;
 			} else if($key == "access_token") {
 				$kii->accessToken = $value;
+			} else if($key == "displayName") {
+				$this->displayName = $value;
 			} else {
 				$this->customInfo[$key] = $value;
 			}
