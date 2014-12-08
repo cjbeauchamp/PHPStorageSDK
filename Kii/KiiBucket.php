@@ -75,7 +75,7 @@ class KiiBucket {
 			$results = array();	
 		}
 		
-		foreach($objectResult['json']->{'results'} as $item) {		
+		foreach($objectResult['json']->{'results'} as $item) {
 			$obj = $this->createObject(null);
 			$obj->updateJSON(get_object_vars($item));
 			$results[] = $obj;

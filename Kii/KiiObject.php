@@ -109,6 +109,12 @@ class KiiObject {
 			} else if($key == "_dataType") {
 				$this->objectType = $value;
 			} else {
+
+				// see if it's a geopoint
+				if($value->{'_type'} == "point") {
+					$value = KiiGeoPoint::geopoint($value->{'lat'}, $value->{'lon'});
+				}
+
 				$this->customInfo[$key] = $value;
 			}
 		}
