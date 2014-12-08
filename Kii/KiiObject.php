@@ -65,6 +65,8 @@ class KiiObject {
 			$className = get_class($value);	
 			if($className == "KiiObject") {
 				$value = $value->objectURI();
+			} else if($className == "KiiGeoPoint") {
+				$value = $value->toDict();
 			} else if(is_array($value)) {
 			    $value = json_encode($value);
 			}
